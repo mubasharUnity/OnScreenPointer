@@ -47,7 +47,7 @@ public class OnScreenPointerObject : MonoBehaviour
     
     private Camera camera_local { get { return OnScreenPointerController.Instance.playerCamera; } }
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         uiImage = GameObject.Instantiate<Image>(uiImagePrefab);
         uiImage.raycastTarget = false;
@@ -55,6 +55,20 @@ public class OnScreenPointerObject : MonoBehaviour
         uiImage.rectTransform.SetParent(onScreenPointerController.uiContainerOfPointers);
     }
 
+    private void OnEnable()
+    {
+        uiImage.gameObject.SetActive(true);
+    }
+
+    private void OnDisable()
+    {
+        uiImage.gameObject.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(uiImage.gameObject);
+    }
     // Update is called once per frame
     void Update()
     {
@@ -84,9 +98,6 @@ public class OnScreenPointerObject : MonoBehaviour
             uiImage.transform.rotation = Quaternion.Euler(0, 0, angle*Mathf.Rad2Deg);
         }
 
-
-
-        //screenPosCentered = screenPosCentered * (isPointerInScreen ? 1 : -1);
         screenPos = ClampToOffsetBounds(screenPos);
         uiImage.transform.position = screenPos;
     }
